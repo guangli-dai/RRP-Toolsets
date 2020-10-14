@@ -20,6 +20,8 @@ private slots:
 
     void on_removePartitionButton_clicked();
 
+    void on_generateButton_clicked();
+
 private:
     Ui::ASC *ui;
 

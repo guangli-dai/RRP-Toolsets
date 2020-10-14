@@ -1,4 +1,4 @@
-#include "task_dialog.h"
+﻿#include "task_dialog.h"
 #include "ui_task_dialog.h"
 
 
@@ -54,32 +54,39 @@ QString Task_Dialog::Name() const
     return ui->name->text();
 }
 
-float Task_Dialog::WCET() const
+QString Task_Dialog::WCET() const
 {
-    return ui->wcetEdit->text().toDouble();
+    return ui->wcetEdit->text();
 }
 
-float Task_Dialog::Deadline() const
+QString Task_Dialog::Deadline() const
 {
-    return ui->deadtimeEdit->text().toDouble();
+    return ui->deadtimeEdit->text();
 }
 
-float Task_Dialog::Period() const
+QString Task_Dialog::Period() const
 {
-    return  ui->periodEdit->text().toDouble();
+    return  ui->periodEdit->text();
 }
 
-float Task_Dialog::Jitter() const
+QString Task_Dialog::Jitter() const
 {
-    return ui->jitterEdit->text().toDouble();
+    return ui->jitterEdit->text();
 }
 
-float Task_Dialog::Offset() const
+QString Task_Dialog::Offset() const
 {
-    return ui->offsetEdit->text().toDouble();
+    return ui->offsetEdit->text();
 }
 
-bool Task_Dialog::IsPeriodic() const
+QString Task_Dialog::IsPeriodic() const
 {
-    return ui->checkBox->checkState();
+    if(ui->checkBox->checkState())
+    {
+        return "true";
+    }
+    else
+    {
+        return "false";
+    }
 }

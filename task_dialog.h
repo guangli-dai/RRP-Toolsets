@@ -20,17 +20,17 @@ public:
 
     QString Name() const;
 
-    float WCET() const;
+    QString WCET() const;
 
-    float Deadline() const;
+    QString Deadline() const;
 
-    float Period() const;
+    QString Period() const;
 
-    float Jitter() const;
+    QString Jitter() const;
 
-    float Offset() const;
+    QString Offset() const;
 
-    bool IsPeriodic() const;
+    QString IsPeriodic() const;
 
     QString execution(double, double, double, double, double, bool);
 

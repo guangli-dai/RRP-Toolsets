@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <task.h>
 #include <QMap>
+#include <QVector>
+#include <QComboBox>
 #include <task_dialog.h>
 #include <QListWidgetItem>
 
@@ -33,16 +35,17 @@ private:
     Ui::PCG *ui;
 
     QString name;
-    double wcet, deadline, period, jitter, offset;
-    bool isperiodic;
+    QString wcet, deadline, period, jitter, offset;
+    QString isperiodic;
 
     enum Column
     {
-        Name, WCEP, Deadline, Period, Jitter, Offset, Periodic_or_sporadic,
+        Name, WCET, Deadline, Period, Jitter, Offset, Periodic_or_sporadic,
     };
 
     QVector<QString> m_data;
 
+    int item_counter = 0;
     int id = 1;
 };
 

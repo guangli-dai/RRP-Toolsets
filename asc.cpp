@@ -48,3 +48,8 @@ void ASC::on_removePartitionButton_clicked()
 {
     ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
+
+void ASC::on_generateButton_clicked()
+{
+
+}
