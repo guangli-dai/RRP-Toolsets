@@ -54,9 +54,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="afDecimalEdit">
+        <widget class="QTextEdit" name="afUpperEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -69,6 +69,9 @@
            <width>256</width>
            <height>25</height>
           </size>
+         </property>
+         <property name="mouseTracking">
+          <bool>false</bool>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -83,9 +86,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="afFractionEdit">
+        <widget class="QTextEdit" name="afLowerEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -241,7 +244,7 @@
        <item>
         <widget class="QPushButton" name="getconfigButton">
          <property name="text">
-          <string>Get Partition Configuration</string>
+          <string>Get Resource Specification</string>
          </property>
          <property name="checkable">
           <bool>false</bool>

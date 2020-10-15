@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <task_dialog.h>
 #include <QListWidgetItem>
+#include <QtMath>
 
 namespace Ui {
 class PCG;
@@ -31,6 +32,13 @@ private slots:
 
     void on_loadButton_clicked();
 
+    void on_getconfigButton_clicked();
+
+    //calcualtes a_deno/a_no += b_deno/b_no
+    void fraction_add(long& a_deno, long& a_no, long b_deno, long b_no);
+
+    //reduce a_deno/a_no
+    void reduce(long& a_deno, long& a_no);
 private:
     Ui::PCG *ui;
 

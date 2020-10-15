@@ -106,3 +106,51 @@ void PCG::on_loadButton_clicked()
 {
 
 }
+
+void PCG::fraction_add(long& a_deno, long& a_no, long b_deno, long b_no)
+{
+    long temp_deno = a_deno*b_no + a_no*b_deno;
+    long temp_no = a_no * b_no;
+    a_deno = temp_deno;
+    a_no = temp_no;
+    reduce(a_deno, a_no);
+}
+
+void PCG::reduce(long& a_deno, long& a_no)
+{
+    long temp_deno = a_deno;
+    long temp_no = a_no;
+    //temp_no should always be no smaller than temp_deno
+    //get the gcd, store it in temp_no
+    while(temp_deno!=0)
+    {
+        long temp = temp_no%temp_deno;
+        temp_no = temp_deno;
+        temp_deno = temp;
+    }
+
+    a_deno /= temp_no;
+    a_no /= temp_no;
+
+}
+
+void PCG::on_getconfigButton_clicked()
+{
+    //get the number of rows
+    item_counter = ui->tableWidget->rowCount();
+    long af_upper = 0, af_lower = 1;
+    //calculate the sum of ceil(wcet)/floor(min(period, deadline))
+    for(int i = 0; i < item_counter; i++)
+    {
+        double wcet = ui->tableWidget->item(i, WCET)->text().toDouble();
+        double period = ui->tableWidget->item(i, Period)->text().toDouble();
+        double deadline = ui->tableWidget -> item(i, Deadline)->text().toDouble();
+        long temp_upper = qCeil(wcet);
+        long temp_lower = qFloor(qMin(period, deadline));
+        fraction_add(af_upper, af_lower, temp_upper, temp_lower);
+    }
+    //set the availability factor in the UI
+    //ui->afUpperEdit->
+    ui->afUpperEdit->setText(QString::number(af_upper));
+    ui->afLowerEdit->setText(QString::number(af_lower));
+}

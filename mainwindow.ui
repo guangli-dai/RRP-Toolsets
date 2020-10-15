@@ -61,8 +61,8 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Partition Configuration Generator
-(PCG)</string>
+         <string>Resource Specification Generator
+(RSG)</string>
         </property>
        </widget>
       </item>
@@ -118,8 +118,8 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Automated Scheduler Configurator
-(ASC)</string>
+         <string>Cyclic Schedule Generator
+(CSG)</string>
         </property>
        </widget>
       </item>
