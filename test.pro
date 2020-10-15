@@ -32,7 +32,7 @@ SOURCES += \
         partition_dialog.cpp \
         pcg.cpp \
         st.cpp \
-        task.cpp \
+        st_dialog.cpp \
         task_dialog.cpp
 
 HEADERS += \
@@ -42,7 +42,7 @@ HEADERS += \
         partition_dialog.h \
         pcg.h \
         st.h \
-        task.h \
+        st_dialog.h \
         task_dialog.h
 
 FORMS += \
@@ -51,6 +51,7 @@ FORMS += \
         partition_dialog.ui \
         pcg.ui \
         st.ui \
+        st_dialog.ui \
         task_dialog.ui
 
 # Default rules for deployment.
