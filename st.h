@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <st_dialog.h>
+#include <QtMath>
 
 namespace Ui {
 class ST;
@@ -25,6 +26,8 @@ private slots:
     void on_saveButton_clicked();
 
     void on_loadButton_clicked();
+
+    void on_getSTButton_clicked();
 
 private:
     Ui::ST *ui;

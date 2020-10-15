@@ -8,7 +8,7 @@ ST::ST(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(7);
-    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
+    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
@@ -76,4 +76,31 @@ void ST::on_saveButton_clicked()
 void ST::on_loadButton_clicked()
 {
 
+}
+
+void ST::on_getSTButton_clicked()
+{
+    item_counter = ui->tableWidget->rowCount();
+    double af = 0;
+    //calculate the smallest availability factor required to make it schedulable
+    for(int i = 0; i < item_counter; i++)
+    {
+        double wcet = ui->tableWidget->item(i, WCET)->text().toDouble();
+        double period = ui->tableWidget->item(i, Period)->text().toDouble();
+        double deadline = ui->tableWidget -> item(i, Deadline)->text().toDouble();
+        double temp = qCeil(wcet) / (double)qFloor(qMin(period, deadline));
+        af += temp;
+    }
+    double inputAf = ui->wcetTextEdit->toPlainText().toDouble()/ui->periodTextEdit->toPlainText().toDouble();
+    //set schedulable or not accordingly
+    qDebug()<<af<<endl;
+    qDebug()<<inputAf<<endl;
+    if(af <= inputAf)
+    {
+        ui->schedulableComboBox->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->schedulableComboBox->setCurrentIndex(1);
+    }
 }

@@ -11,7 +11,7 @@ PCG::PCG(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(7);
-    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
+    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
