@@ -14,8 +14,8 @@ class Partition_Dialog : public QDialog
 public:
 
     QString Name() const;
-    float WCET() const;
-    float Period() const;
+    QString WCET() const;
+    QString Period() const;
 
     explicit Partition_Dialog(QWidget *parent = nullptr);
     ~Partition_Dialog();

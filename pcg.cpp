@@ -2,6 +2,8 @@
 #include "ui_pcg.h"
 #include "QComboBox"
 #include "QFile"
+#include "QMessageBox"
+#include "QFileDialog"
 #include "QDebug"
 
 PCG::PCG(QWidget *parent) :
@@ -11,7 +13,7 @@ PCG::PCG(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(7);
-    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
+    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
@@ -73,38 +75,138 @@ void PCG::on_taskRemoveButton_clicked()
 
 void PCG::on_saveButton_clicked()
 {
-    //统计行数 创建数组
-    item_counter = ui->tableWidget->rowCount();
-    qDebug() << item_counter;
-    QVector<QVector<QString>> vec;
-    //存入vector
-    for(int i = 0; i < item_counter; i++)
+    QString filename1 = QFileDialog::getSaveFileName(
+                this,
+                "TextEditor - save as",
+                "",
+                "Text File (*.txt);;All Files (*.*)");
+    curSaveFile = filename1;
+    if(!filename1.isEmpty())
     {
-        QVector<QString> temp;
-        temp.push_back(ui->tableWidget->item(i,Name)->text());
-        temp.push_back(ui->tableWidget->item(i,WCET)->text());
-        temp.push_back(ui->tableWidget->item(i,Deadline)->text());
-        temp.push_back(ui->tableWidget->item(i,Period)->text());
-        temp.push_back(ui->tableWidget->item(i,Jitter)->text());
-        temp.push_back(ui->tableWidget->item(i,Offset)->text());
-        //下拉菜单
-        //temp.push_back(ui->tableWidget->cellWidget(i, Periodic_or_sporadic));
-
-        vec.push_back(temp);
+        saveFile();
     }
-
-    QFile file("save.txt");
-    if(!file.open(QFile::WriteOnly | QFile::Text))
+    else
     {
-        qDebug()<<"can not open to write";
         return;
     }
+}
 
+void PCG::saveFile()
+{
+    //统计行数
+    item_counter = ui->tableWidget->rowCount();
+    qDebug() << item_counter;
+
+    QFile file1(curSaveFile);
+    if(!file1.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::warning(
+                    this,
+                    "TextEditor",
+                    tr("Cannot write file %1./nError: %2")
+                    .arg(curSaveFile)
+                    .arg(file1.errorString()));
+
+    }
+
+    QDataStream out(&file1);
+    out.setVersion(QDataStream::Qt_4_7);
+
+    out << QString::number(item_counter);
+    for(int i = 0; i < item_counter; i++)
+    {
+        out << ui->tableWidget->item(i,Name)->text()
+            << ui->tableWidget->item(i,WCET)->text()
+            << ui->tableWidget->item(i,Deadline)->text()
+            << ui->tableWidget->item(i,Period)->text()
+            << ui->tableWidget->item(i,Jitter)->text()
+            << ui->tableWidget->item(i,Offset)->text();
+        //下拉选单
+    }
+
+    file1.flush();
+    file1.close();
 }
 
 void PCG::on_loadButton_clicked()
 {
+    QString filename2 = QFileDialog::getOpenFileName(
+                this,
+                tr("Open Address Book"),
+                "",
+                tr("Address Book (*.txt,,All Files (*))"));
+    curOpenFile = filename2;
+    if(!filename2.isEmpty())
+    {
+        loadFile();
+    }
+    else
+    {
+        return;
+    }
+}
 
+void PCG::loadFile()
+{
+    QFile file(curOpenFile);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::warning(
+                    this,
+                    "TextEditor",
+                    tr("Cannot open file %1./nError: %2")
+                    .arg(curOpenFile)
+                    .arg(file.errorString()));
+    }
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_4_7);
+
+    qDebug() << file;
+    QString temp_counter;
+    in >> temp_counter;
+    item_counter = temp_counter.toInt();
+
+    ui->tableWidget->setRowCount(0);
+    for(int i = 0; i < item_counter; i++)
+    {
+        in >> name
+           >> wcet
+           >> deadline
+           >> period
+           >> jitter
+           >> offset;
+           //下拉选单
+           //>> isperiodic;
+
+        qDebug() << name;
+
+        ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+        int temp = ui->tableWidget->rowCount() - 1;
+
+        QComboBox *dropdown = new QComboBox();
+        dropdown->addItem("Periodic");
+        dropdown->addItem("Sporadic");
+
+        //逐行输入
+        ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
+        ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
+        ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
+        ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
+        ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
+        ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
+        //下拉选单
+        ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
+        if(isperiodic == "true")
+        {
+            dropdown->setCurrentIndex(0);
+        }
+        else
+        {
+            dropdown->setCurrentIndex(1);
+        }
+    }
+
+    file.close();
 }
 
 void PCG::fraction_add(long& a_deno, long& a_no, long b_deno, long b_no)

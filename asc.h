@@ -22,15 +22,27 @@ private slots:
 
     void on_generateButton_clicked();
 
+    void on_loadButton_clicked();
+
+    void on_saveButton_clicked();
+
 private:
     Ui::ASC *ui;
 
+    void saveFile();
+    void loadFile();
+    QString curSaveFile;
+    QString curOpenFile;
+
+    QString name;
+    QString wcet, period;
+
     enum Column
     {
-        Name, WCEP, Period, Availability_Factor
+        Name, WCET, Period, Availability_Factor
     };
 
-    QVector<QString> m_data;
+    int item_counter = 0;
 
     int id = 1;
 };

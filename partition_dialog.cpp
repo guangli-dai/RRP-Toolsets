@@ -28,13 +28,13 @@ QString Partition_Dialog::Name() const
     return ui->idLineEdit->text();
 }
 
-float Partition_Dialog::WCET() const
+QString Partition_Dialog::WCET() const
 {
-    return ui->wcetLineEdit->text().toDouble();
+    return ui->wcetLineEdit->text();
 }
 
-float Partition_Dialog::Period() const
+QString Partition_Dialog::Period() const
 {
-    return ui->periodLineEdit->text().toDouble();
+    return ui->periodLineEdit->text();
 }
 

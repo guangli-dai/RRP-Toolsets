@@ -42,6 +42,11 @@ private slots:
 private:
     Ui::PCG *ui;
 
+    void saveFile();
+    void loadFile();
+    QString curSaveFile;
+    QString curOpenFile;
+
     QString name;
     QString wcet, deadline, period, jitter, offset;
     QString isperiodic;
