@@ -42,6 +42,8 @@ private:
         Name, WCET, Period, Availability_Factor
     };
 
+    QVector<QString> m_data;
+
     int item_counter = 0;
 
     int id = 1;

@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Schedulability Test</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -37,6 +37,19 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
+      <spacer name="horizontalSpacer_11">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QLabel" name="afLabel">
        <property name="maximumSize">
         <size>
@@ -45,7 +58,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Partition Availability Factor = </string>
+        <string>Regular Specification's Availability Factor = </string>
        </property>
       </widget>
      </item>
@@ -53,7 +66,7 @@
       <widget class="QPlainTextEdit" name="wcetTextEdit">
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
+         <width>40</width>
          <height>20</height>
         </size>
        </property>
@@ -73,7 +86,7 @@
       <widget class="QPlainTextEdit" name="periodTextEdit">
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
+         <width>40</width>
          <height>20</height>
         </size>
        </property>
@@ -81,6 +94,19 @@
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

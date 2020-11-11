@@ -45,7 +45,6 @@ void ASC::on_addPartitionButton_clicked()
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
     ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
     ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
-
 }
 
 void ASC::on_removePartitionButton_clicked()
@@ -155,3 +154,4 @@ void ASC::loadFile()
     }
     file.close();
 }
+

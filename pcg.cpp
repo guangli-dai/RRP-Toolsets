@@ -2,9 +2,9 @@
 #include "ui_pcg.h"
 #include "QComboBox"
 #include "QFile"
+#include "QDebug"
 #include "QMessageBox"
 #include "QFileDialog"
-#include "QDebug"
 
 PCG::PCG(QWidget *parent) :
     QDialog(parent),
@@ -13,7 +13,7 @@ PCG::PCG(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(7);
-    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
+    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
@@ -73,24 +73,6 @@ void PCG::on_taskRemoveButton_clicked()
     ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
 
-void PCG::on_saveButton_clicked()
-{
-    QString filename1 = QFileDialog::getSaveFileName(
-                this,
-                "TextEditor - save as",
-                "",
-                "Text File (*.txt);;All Files (*.*)");
-    curSaveFile = filename1;
-    if(!filename1.isEmpty())
-    {
-        saveFile();
-    }
-    else
-    {
-        return;
-    }
-}
-
 void PCG::saveFile()
 {
     //统计行数
@@ -126,6 +108,24 @@ void PCG::saveFile()
 
     file1.flush();
     file1.close();
+}
+
+void PCG::on_saveButton_clicked()
+{
+    QString filename1 = QFileDialog::getSaveFileName(
+                this,
+                "TextEditor - save as",
+                "",
+                "Text File (*.txt);;All Files (*.*)");
+    curSaveFile = filename1;
+    if(!filename1.isEmpty())
+    {
+        saveFile();
+    }
+    else
+    {
+        return;
+    }
 }
 
 void PCG::on_loadButton_clicked()
