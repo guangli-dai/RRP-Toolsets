@@ -4,6 +4,10 @@
 #include "QDebug"
 #include "QMessageBox"
 #include "QFileDialog"
+#include "QJsonObject"
+#include "QJsonDocument"
+#include "QJsonArray"
+#include "QJsonParseError"
 
 ST::ST(QWidget *parent) :
     QDialog(parent),
@@ -69,7 +73,7 @@ void ST::on_taskEnterButton_clicked()
 
 void ST::on_taskRemoveButton_clicked()
 {
-
+    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
 
 void ST::on_saveButton_clicked()
@@ -78,7 +82,7 @@ void ST::on_saveButton_clicked()
                 this,
                 "TextEditor - save as",
                 "",
-                "Text File (*.txt);;All Files (*.*)");
+                "Json File (*.json);;All Files (*.*)");
     curSaveFile = filename1;
     if(!filename1.isEmpty())
     {
@@ -96,29 +100,39 @@ void ST::saveFile()
     item_counter = ui->tableWidget->rowCount();
     qDebug() << item_counter;
 
-    QFile file("data2.txt");
+    QFile file(curSaveFile);
     if(!file.open(QIODevice::WriteOnly))
     {
         qDebug() << "Can not open file";
         return;
     }
 
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_4_7);
+    QJsonObject mainObj;
 
     for(int i = 0; i < item_counter; i++)
     {
-        out << ui->tableWidget->item(i,Name)->text()
-            << ui->tableWidget->item(i,WCET)->text()
-            << ui->tableWidget->item(i,Deadline)->text()
-            << ui->tableWidget->item(i,Period)->text()
-            << ui->tableWidget->item(i,Jitter)->text()
-            << ui->tableWidget->item(i,Offset)->text();
+        QJsonObject jsonObject;
+        jsonObject.insert("Name",ui->tableWidget->item(i,Name)->text());
+        jsonObject.insert("WCET",ui->tableWidget->item(i,WCET)->text());
+        jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
+        jsonObject.insert("Period",ui->tableWidget->item(i,Period)->text());
+        jsonObject.insert("Jitter",ui->tableWidget->item(i,Jitter)->text());
+        jsonObject.insert("Offset",ui->tableWidget->item(i,Offset)->text());
+
         //下拉选单
+
+
+        mainObj.insert(QString::number(i + 1),jsonObject);
     }
 
+    QJsonObject jsonObject;
+    jsonObject.insert("item_counter", item_counter);
+    mainObj.insert("number",jsonObject);
 
-    file.flush();
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(mainObj);
+
+    file.write(jsonDoc.toJson());
     file.close();
 }
 
@@ -126,9 +140,9 @@ void ST::on_loadButton_clicked()
 {
     QString filename2 = QFileDialog::getOpenFileName(
                 this,
-                tr("Open Address Book"),
+                "TextEditor - Open",
                 "",
-                tr("Address Book (*.txt,,All Files (*))"));
+                "Json File (*.json);;All Files (*.*)");
     curOpenFile = filename2;
     if(!filename2.isEmpty())
     {
@@ -152,35 +166,47 @@ void ST::loadFile()
                     .arg(curOpenFile)
                     .arg(file.errorString()));
     }
-    QDataStream in(&file);
-    in.setVersion(QDataStream::Qt_4_7);
+    QByteArray allData = file.readAll();
+    file.close();
 
-    qDebug() << file;
-    QString temp_counter;
-    in >> temp_counter;
-    item_counter = temp_counter.toInt();
+    QJsonParseError json_error;
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(allData, &json_error));
+
+    if(json_error.error != QJsonParseError::NoError)
+    {
+        qDebug() << "error";
+        return;
+    }
+
+    int item_size = 0;
+
+    QJsonObject rootObj = jsonDoc.object();
+    //getting item size
+    if(rootObj.contains("number"))
+    {
+        item_size = rootObj.value("number").toObject()["item_counter"].toInt();
+    }
 
     ui->tableWidget->setRowCount(0);
-    for(int i = 0; i < item_counter; i++)
+    //reading items
+    for(int i = 0; i <item_size; i++)
     {
-        in >> name
-           >> wcet
-           >> deadline
-           >> period
-           >> jitter
-           >> offset;
-           //下拉选单
-           //>> isperiodic;
+        name = rootObj.value(QString::number(i + 1)).toObject()["Name"].toString();
+        wcet = rootObj.value(QString::number(i + 1)).toObject()["WCET"].toString();
+        deadline = rootObj.value(QString::number(i + 1)).toObject()["Deadline"].toString();
+        period = rootObj.value(QString::number(i + 1)).toObject()["Period"].toString();
+        jitter = rootObj.value(QString::number(i + 1)).toObject()["Jitter"].toString();
+        offset = rootObj.value(QString::number(i + 1)).toObject()["Offset"].toString();
+        //下拉选单
+        //isperiodic = rootObj.value(QString::number(i + 1)).toObject()["Isperiodic"].toString();
 
-        qDebug() << name;
-
+        //adding to the tablewidge
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         int temp = ui->tableWidget->rowCount() - 1;
 
         QComboBox *dropdown = new QComboBox();
         dropdown->addItem("Periodic");
         dropdown->addItem("Sporadic");
-
         //逐行输入
         ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
         ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
@@ -188,6 +214,7 @@ void ST::loadFile()
         ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
         ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
         ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
+
         //下拉选单
         ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
         if(isperiodic == "true")
@@ -199,8 +226,6 @@ void ST::loadFile()
             dropdown->setCurrentIndex(1);
         }
     }
-
-    file.close();
 }
 
 
