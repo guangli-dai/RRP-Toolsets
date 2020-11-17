@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui charts xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,9 +30,10 @@ SOURCES += \
         mainwindow.cpp \
         partition.cpp \
         partition_dialog.cpp \
-        pcg.cpp \
+        rsg.cpp \
+        scheduleoutput_dialog.cpp \
         st.cpp \
-        task.cpp \
+        st_dialog.cpp \
         task_dialog.cpp
 
 HEADERS += \
@@ -40,17 +41,20 @@ HEADERS += \
         mainwindow.h \
         partition.h \
         partition_dialog.h \
-        pcg.h \
+        rsg.h \
+        scheduleoutput_dialog.h \
         st.h \
-        task.h \
+        st_dialog.h \
         task_dialog.h
 
 FORMS += \
         asc.ui \
         mainwindow.ui \
         partition_dialog.ui \
-        pcg.ui \
+        rsg.ui \
+        scheduleoutput_dialog.ui \
         st.ui \
+        st_dialog.ui \
         task_dialog.ui
 
 # Default rules for deployment.

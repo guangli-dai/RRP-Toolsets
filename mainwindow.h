@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
-#include <pcg.h>
+#include <rsg.h>
 #include <QDebug>
 
 namespace Ui {
@@ -26,19 +26,19 @@ private slots:
 
     void on_actionSave_as_triggered();
 
-    void on_pcgButton_clicked();
-
     void on_ascButton_clicked();
 
     void on_schedulabilityButton_clicked();
 
-    void on_actionPCG_triggered();
+    void on_actionRSG_triggered();
 
     void on_actionASG_triggered();
 
     void on_actionST_triggered();
 
     void on_actionRRP_model_triggered();
+
+    void on_rsgButton_clicked();
 
 private:
     Ui::MainWindow *ui;

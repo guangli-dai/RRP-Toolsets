@@ -1,26 +1,24 @@
-﻿#include "task_dialog.h"
-#include "ui_task_dialog.h"
+﻿#include "st_dialog.h"
+#include "ui_st_dialog.h"
 
-
-Task_Dialog::Task_Dialog(QWidget *parent) :
+St_Dialog::St_Dialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Task_Dialog)
+    ui(new Ui::St_Dialog)
 {
     ui->setupUi(this);
 }
 
-Task_Dialog::~Task_Dialog()
+St_Dialog::~St_Dialog()
 {
     delete ui;
 }
 
-void Task_Dialog::addTask()
+void St_Dialog::addTask()
 {
     exec();
 }
 
-
-QString Task_Dialog::execution(double a, double b, double c, double d, double e, bool f)
+QString St_Dialog::execution(double a, double b, double c, double d, double e, bool f)
 {
     ui->wcetEdit->setText(QString::number(a));
     ui->deadtimeEdit->setText(QString::number(b));
@@ -33,53 +31,53 @@ QString Task_Dialog::execution(double a, double b, double c, double d, double e,
     return text;
 }
 
-
-QString Task_Dialog::get_info()
+QString St_Dialog::get_info()
 {
     return text;
 }
 
-void Task_Dialog::on_OkbuttonBox_rejected()
+
+void St_Dialog::on_OkbuttonBox_rejected()
 {
     reject();
 }
 
-void Task_Dialog::on_OkbuttonBox_accepted()
+void St_Dialog::on_OkbuttonBox_accepted()
 {
     accept();
 }
 
-QString Task_Dialog::Name() const
+QString St_Dialog::Name() const
 {
     return ui->name->text();
 }
 
-QString Task_Dialog::WCET() const
+QString St_Dialog::WCET() const
 {
     return ui->wcetEdit->text();
 }
 
-QString Task_Dialog::Deadline() const
+QString St_Dialog::Deadline() const
 {
     return ui->deadtimeEdit->text();
 }
 
-QString Task_Dialog::Period() const
+QString St_Dialog::Period() const
 {
     return  ui->periodEdit->text();
 }
 
-QString Task_Dialog::Jitter() const
+QString St_Dialog::Jitter() const
 {
     return ui->jitterEdit->text();
 }
 
-QString Task_Dialog::Offset() const
+QString St_Dialog::Offset() const
 {
     return ui->offsetEdit->text();
 }
 
-QString Task_Dialog::IsPeriodic() const
+QString St_Dialog::IsPeriodic() const
 {
     if(ui->checkBox->checkState())
     {

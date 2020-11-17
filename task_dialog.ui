@@ -63,7 +63,7 @@
        <item row="3" column="0">
         <widget class="QLabel" name="periodLabel">
          <property name="text">
-          <string>Period</string>
+          <string>Period/Minimum Separation Time</string>
          </property>
         </widget>
        </item>

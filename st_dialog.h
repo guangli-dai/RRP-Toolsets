@@ -1,16 +1,15 @@
-﻿#ifndef TASK_DIALOG_H
-#define TASK_DIALOG_H
+﻿#ifndef ST_DIALOG_H
+#define ST_DIALOG_H
 
 #include <QDialog>
-#include <task.h>
 #include <QDebug>
 #include <QMap>
 
 namespace Ui {
-class Task_Dialog;
+class St_Dialog;
 }
 
-class Task_Dialog : public QDialog
+class St_Dialog : public QDialog
 {
     Q_OBJECT
 
@@ -36,8 +35,8 @@ public:
 
     QString get_info();
 
-    explicit Task_Dialog(QWidget *parent = nullptr);
-    ~Task_Dialog();
+    explicit St_Dialog(QWidget *parent = nullptr);
+    ~St_Dialog();
 
 private slots:
     void on_OkbuttonBox_accepted();
@@ -45,7 +44,7 @@ private slots:
     void on_OkbuttonBox_rejected();
 
 private:
-    Ui::Task_Dialog *ui;
+    Ui::St_Dialog *ui;
 
     QString text;
 

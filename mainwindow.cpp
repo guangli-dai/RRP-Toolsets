@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "asc.h"
 #include "st.h"
+#include "rsg.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QVariant>
@@ -58,12 +59,6 @@ void MainWindow::on_actionSave_as_triggered()
     file.close();
 }
 
-void MainWindow::on_pcgButton_clicked()
-{
-    PCG pcg;
-    pcg.setModal(true);
-    pcg.exec();
-}
 
 void MainWindow::on_ascButton_clicked()
 {
@@ -83,8 +78,8 @@ void MainWindow::on_schedulabilityButton_clicked()
 void MainWindow::on_actionASG_triggered()
 {
     QMessageBox *mBox = new QMessageBox(QMessageBox::Information,
-                                        "Automated Schedule Configurator",
-                                        "ASC generates one cyclic schedule for each CPU with the configurations of the partitions taken as inputs.",
+                                        "Cyclic Schedule Generator",
+                                        "CSG generates one cyclic schedule for each CPU with the configurations of the partitions (resource specifications) taken as inputs.",
                                         QMessageBox::Ok | QMessageBox::Default);
     mBox->show();
 }
@@ -107,11 +102,18 @@ void MainWindow::on_actionRRP_model_triggered()
     mBox->show();
 }
 
-void MainWindow::on_actionPCG_triggered()
+void MainWindow::on_actionRSG_triggered()
 {
     QMessageBox *mBox = new QMessageBox(QMessageBox::Information,
-                                        "Partition Configuration Generator",
-                                        "PCG takes in the information of a task set that will be deployed on a partition. It generates an availability factor so that the task set given is schedulable on the partition equipped with the availability factor. ",
+                                        "Resource Specification Generator",
+                                        "RSG takes in the information of a task set that will be deployed on a partition. It generates an availabilit factor (a resource specification) so that the task set given is schedulable on the partition with the availability factor. ",
                                         QMessageBox::Ok | QMessageBox::Default);
     mBox->show();
+}
+
+void MainWindow::on_rsgButton_clicked()
+{
+    RSG rsg;
+    rsg.setModal(true);
+    rsg.exec();
 }

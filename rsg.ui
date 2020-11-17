@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PCG</class>
- <widget class="QDialog" name="PCG">
+ <class>RSG</class>
+ <widget class="QDialog" name="RSG">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -9,18 +9,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
+    <width>950</width>
     <height>530</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>780</width>
+    <width>950</width>
     <height>530</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Partition Configuration Generator</string>
+   <string>Resource Specification Generator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -36,10 +36,30 @@
       </widget>
      </item>
      <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="sizeConstraint">
         <enum>QLayout::SetNoConstraint</enum>
        </property>
+       <item>
+        <spacer name="horizontalSpacer_9">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QLabel" name="afLabel">
          <property name="sizePolicy">
@@ -49,14 +69,14 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Regular Partition Availability Factor:</string>
+          <string>Result: Regular Specification's Availability Factor=</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="afDecimalEdit">
+        <widget class="QTextEdit" name="afUpperEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -66,9 +86,15 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>256</width>
+           <width>40</width>
            <height>25</height>
           </size>
+         </property>
+         <property name="mouseTracking">
+          <bool>false</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -78,14 +104,14 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>=</string>
+          <string>/</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="afFractionEdit">
+        <widget class="QTextEdit" name="afLowerEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -95,14 +121,30 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
+           <width>40</width>
            <height>25</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
@@ -241,7 +283,7 @@
        <item>
         <widget class="QPushButton" name="getconfigButton">
          <property name="text">
-          <string>Get Partition Configuration</string>
+          <string>Get Resource Specification</string>
          </property>
          <property name="checkable">
           <bool>false</bool>

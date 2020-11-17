@@ -6,12 +6,17 @@ class Partition
 {
 public:
     Partition();
-    Partition(QString name, long long w, long long p);
-
+    Partition(QString name, int w, int p);
+    QString getId(){return id;}
+    int getWCET(){return wcet;}
+    int getPeriod(){return period;}
+    double getAF(){return af;}
+    void reset(int w, int p){wcet = w; period=p;}
 private:
     QString id;
-    long long wcet;
-    long long period;
+    int wcet;
+    int period;
+    double af;//short for availability factor
 };
 
 #endif // PARTITION_H
