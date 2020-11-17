@@ -1,5 +1,5 @@
-﻿#include "pcg.h"
-#include "ui_pcg.h"
+﻿#include "rsg.h"
+#include "ui_rsg.h"
 #include "QComboBox"
 #include "QFile"
 #include "QDebug"
@@ -10,31 +10,34 @@
 #include "QJsonArray"
 #include "QJsonParseError"
 
-PCG::PCG(QWidget *parent) :
+RSG::RSG(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PCG)
+    ui(new Ui::RSG)
 {
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(7);
-    title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
+    title_col << "Task Id" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
+    ui->tableWidget->setColumnWidth(3, 200);
 }
 
-PCG::~PCG()
+RSG::~RSG()
 {
     delete ui;
 }
 
-void PCG::on_taskEnterButton_clicked()
+void RSG::on_taskEnterButton_clicked()
 {
     int res;
     Task_Dialog td;
+    //takes user's input
     res = td.exec();
     if(res == QDialog::Rejected)
     {
         return;
     }
+
 
     name = td.Name();
     wcet = td.WCET();
@@ -51,7 +54,7 @@ void PCG::on_taskEnterButton_clicked()
     dropdown->addItem("Periodic");
     dropdown->addItem("Sporadic");
 
-    //逐行输入
+    //write to the table column after column
     ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
     ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
@@ -59,7 +62,7 @@ void PCG::on_taskEnterButton_clicked()
     ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
     ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
 
-    //下拉选单
+    //combobox setting
     ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
     if(isperiodic == "true")
     {
@@ -72,14 +75,14 @@ void PCG::on_taskEnterButton_clicked()
 
 }
 
-void PCG::on_taskRemoveButton_clicked()
+void RSG::on_taskRemoveButton_clicked()
 {
     ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
 
-void PCG::saveFile()
+void RSG::saveFile()
 {
-    //统计行数
+    //get number of rows in the table
     item_counter = ui->tableWidget->rowCount();
     qDebug() << item_counter;
 
@@ -96,19 +99,20 @@ void PCG::saveFile()
     }
 
     QJsonObject mainObj;
-
+    //writes data in json format one after another
     for(int i = 0; i < item_counter; i++)
     {
         QJsonObject jsonObject;
-        jsonObject.insert("Name",ui->tableWidget->item(i,Name)->text());
+        jsonObject.insert("ID",ui->tableWidget->item(i,Name)->text());
         jsonObject.insert("WCET",ui->tableWidget->item(i,WCET)->text());
         jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
         jsonObject.insert("Period",ui->tableWidget->item(i,Period)->text());
         jsonObject.insert("Jitter",ui->tableWidget->item(i,Jitter)->text());
         jsonObject.insert("Offset",ui->tableWidget->item(i,Offset)->text());
 
-        //下拉选单
-
+        QComboBox* temp_drop = static_cast<QComboBox*>(ui->tableWidget->cellWidget(i, Periodic_or_sporadic));
+        isperiodic = temp_drop->currentText();
+        jsonObject.insert("Periodic/Sporadic", isperiodic);
 
         mainObj.insert(QString::number(i + 1),jsonObject);
     }
@@ -124,7 +128,7 @@ void PCG::saveFile()
     file.close();
 }
 
-void PCG::on_saveButton_clicked()
+void RSG::on_saveButton_clicked()
 {
     QString filename1 = QFileDialog::getSaveFileName(
                 this,
@@ -142,7 +146,7 @@ void PCG::on_saveButton_clicked()
     }
 }
 
-void PCG::on_loadButton_clicked()
+void RSG::on_loadButton_clicked()
 {
     QString filename2 = QFileDialog::getOpenFileName(
                 this,
@@ -160,7 +164,7 @@ void PCG::on_loadButton_clicked()
     }
 }
 
-void PCG::loadFile()
+void RSG::loadFile()
 {
     QFile file(curOpenFile);
     if(!file.open(QIODevice::ReadOnly))
@@ -198,23 +202,24 @@ void PCG::loadFile()
     //reading items
     for(int i = 0; i <item_size; i++)
     {
-        name = rootObj.value(QString::number(i + 1)).toObject()["Name"].toString();
+        name = rootObj.value(QString::number(i + 1)).toObject()["ID"].toString();
         wcet = rootObj.value(QString::number(i + 1)).toObject()["WCET"].toString();
         deadline = rootObj.value(QString::number(i + 1)).toObject()["Deadline"].toString();
         period = rootObj.value(QString::number(i + 1)).toObject()["Period"].toString();
         jitter = rootObj.value(QString::number(i + 1)).toObject()["Jitter"].toString();
         offset = rootObj.value(QString::number(i + 1)).toObject()["Offset"].toString();
-        //下拉选单
-        //isperiodic = rootObj.value(QString::number(i + 1)).toObject()["Isperiodic"].toString();
+        //combobox reading
+        isperiodic = rootObj.value(QString::number(i + 1)).toObject()["Periodic/Sporadic"].toString();
 
-        //adding to the tablewidge
+        //adding to the tablewidget
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         int temp = ui->tableWidget->rowCount() - 1;
 
         QComboBox *dropdown = new QComboBox();
         dropdown->addItem("Periodic");
         dropdown->addItem("Sporadic");
-        //逐行输入
+
+        //set column by column
         ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
         ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
         ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
@@ -222,9 +227,9 @@ void PCG::loadFile()
         ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
         ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
 
-        //下拉选单
+        //set up the combobox
         ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
-        if(isperiodic == "true")
+        if(isperiodic == "Periodic")
         {
             dropdown->setCurrentIndex(0);
         }
@@ -235,7 +240,7 @@ void PCG::loadFile()
     }
 }
 
-void PCG::fraction_add(long& a_deno, long& a_no, long b_deno, long b_no)
+void RSG::fraction_add(long& a_deno, long& a_no, long b_deno, long b_no)
 {
     long temp_deno = a_deno*b_no + a_no*b_deno;
     long temp_no = a_no * b_no;
@@ -244,7 +249,7 @@ void PCG::fraction_add(long& a_deno, long& a_no, long b_deno, long b_no)
     reduce(a_deno, a_no);
 }
 
-void PCG::reduce(long& a_deno, long& a_no)
+void RSG::reduce(long& a_deno, long& a_no)
 {
     long temp_deno = a_deno;
     long temp_no = a_no;
@@ -262,7 +267,7 @@ void PCG::reduce(long& a_deno, long& a_no)
 
 }
 
-void PCG::on_getconfigButton_clicked()
+void RSG::on_getconfigButton_clicked()
 {
     //get the number of rows
     item_counter = ui->tableWidget->rowCount();
@@ -278,7 +283,6 @@ void PCG::on_getconfigButton_clicked()
         fraction_add(af_upper, af_lower, temp_upper, temp_lower);
     }
     //set the availability factor in the UI
-    //ui->afUpperEdit->
     ui->afUpperEdit->setText(QString::number(af_upper));
     ui->afLowerEdit->setText(QString::number(af_lower));
 }

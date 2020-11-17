@@ -18,6 +18,7 @@ ST::ST(QWidget *parent) :
     ui->tableWidget->setColumnCount(7);
     title_col << "Task #" << "WCET(ms)" << "Deadline(ms)" << "Period/Minimum Separation(ms)" << "Jitter(ms)" << "Offset(ms)" << "Periodic/sporadic";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
+    ui->tableWidget->setColumnWidth(3, 200);
 }
 
 ST::~ST()
@@ -29,6 +30,7 @@ void ST::on_taskEnterButton_clicked()
 {
     int res;
     St_Dialog td;
+    //get user's inputs
     res = td.exec();
     if(res == QDialog::Rejected)
     {
@@ -50,7 +52,7 @@ void ST::on_taskEnterButton_clicked()
     dropdown->addItem("Periodic");
     dropdown->addItem("Sporadic");
 
-    //逐行输入
+    //set items column by column
     ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
     ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
@@ -58,7 +60,7 @@ void ST::on_taskEnterButton_clicked()
     ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
     ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
 
-    //下拉选单
+    //combox box setup
     ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
     if(isperiodic == "true")
     {
@@ -96,14 +98,14 @@ void ST::on_saveButton_clicked()
 
 void ST::saveFile()
 {
-    //统计行数
+    //get the number of rows in the table
     item_counter = ui->tableWidget->rowCount();
     qDebug() << item_counter;
 
     QFile file(curSaveFile);
     if(!file.open(QIODevice::WriteOnly))
     {
-        qDebug() << "Can not open file";
+        qDebug() << "Cannot open file";
         return;
     }
 
@@ -112,15 +114,15 @@ void ST::saveFile()
     for(int i = 0; i < item_counter; i++)
     {
         QJsonObject jsonObject;
-        jsonObject.insert("Name",ui->tableWidget->item(i,Name)->text());
+        jsonObject.insert("ID",ui->tableWidget->item(i,Name)->text());
         jsonObject.insert("WCET",ui->tableWidget->item(i,WCET)->text());
         jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
         jsonObject.insert("Period",ui->tableWidget->item(i,Period)->text());
         jsonObject.insert("Jitter",ui->tableWidget->item(i,Jitter)->text());
         jsonObject.insert("Offset",ui->tableWidget->item(i,Offset)->text());
-
-        //下拉选单
-
+        QComboBox* temp_drop = static_cast<QComboBox*>(ui->tableWidget->cellWidget(i, Periodic_or_sporadic));
+        isperiodic = temp_drop->currentText();
+        jsonObject.insert("Periodic/Sporadic", isperiodic);
 
         mainObj.insert(QString::number(i + 1),jsonObject);
     }
@@ -128,6 +130,11 @@ void ST::saveFile()
     QJsonObject jsonObject;
     jsonObject.insert("item_counter", item_counter);
     mainObj.insert("number",jsonObject);
+
+    QJsonObject specification;
+    specification.insert("partitionWCET", ui->wcetTextEdit->toPlainText());
+    specification.insert("partitionPeriod", ui->periodTextEdit->toPlainText());
+    mainObj.insert("Specification", specification);
 
     QJsonDocument jsonDoc;
     jsonDoc.setObject(mainObj);
@@ -191,14 +198,14 @@ void ST::loadFile()
     //reading items
     for(int i = 0; i <item_size; i++)
     {
-        name = rootObj.value(QString::number(i + 1)).toObject()["Name"].toString();
+        name = rootObj.value(QString::number(i + 1)).toObject()["ID"].toString();
         wcet = rootObj.value(QString::number(i + 1)).toObject()["WCET"].toString();
         deadline = rootObj.value(QString::number(i + 1)).toObject()["Deadline"].toString();
         period = rootObj.value(QString::number(i + 1)).toObject()["Period"].toString();
         jitter = rootObj.value(QString::number(i + 1)).toObject()["Jitter"].toString();
         offset = rootObj.value(QString::number(i + 1)).toObject()["Offset"].toString();
-        //下拉选单
-        //isperiodic = rootObj.value(QString::number(i + 1)).toObject()["Isperiodic"].toString();
+        //combobox reading
+        isperiodic = rootObj.value(QString::number(i + 1)).toObject()["Periodic/Sporadic"].toString();
 
         //adding to the tablewidge
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
@@ -207,7 +214,8 @@ void ST::loadFile()
         QComboBox *dropdown = new QComboBox();
         dropdown->addItem("Periodic");
         dropdown->addItem("Sporadic");
-        //逐行输入
+
+        //set column by column
         ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
         ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
         ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
@@ -215,9 +223,9 @@ void ST::loadFile()
         ui->tableWidget->setItem(temp, Jitter, new QTableWidgetItem(jitter));
         ui->tableWidget->setItem(temp, Offset, new QTableWidgetItem(offset));
 
-        //下拉选单
+        //combo box setup
         ui->tableWidget->setCellWidget(temp, Periodic_or_sporadic, dropdown);
-        if(isperiodic == "true")
+        if(isperiodic == "Periodic")
         {
             dropdown->setCurrentIndex(0);
         }
@@ -225,6 +233,11 @@ void ST::loadFile()
         {
             dropdown->setCurrentIndex(1);
         }
+    }
+    if(rootObj.contains("Specification"))
+    {
+        ui->wcetTextEdit->setPlainText(rootObj.value("Specification").toObject()["partitionWCET"].toString());
+        ui->periodTextEdit->setPlainText(rootObj.value("Specification").toObject()["partitionPeriod"].toString());
     }
 }
 
@@ -239,13 +252,11 @@ void ST::on_getSTButton_clicked()
         double wcet = ui->tableWidget->item(i, WCET)->text().toDouble();
         double period = ui->tableWidget->item(i, Period)->text().toDouble();
         double deadline = ui->tableWidget -> item(i, Deadline)->text().toDouble();
-        double temp = qCeil(wcet) / (double)qFloor(qMin(period, deadline));
+        double temp = qCeil(wcet) / static_cast<double>(qFloor(qMin(period, deadline)));
         af += temp;
     }
     double inputAf = ui->wcetTextEdit->toPlainText().toDouble()/ui->periodTextEdit->toPlainText().toDouble();
     //set schedulable or not accordingly
-    qDebug()<<af<<endl;
-    qDebug()<<inputAf<<endl;
     if(af <= inputAf)
     {
         ui->schedulableComboBox->setCurrentIndex(0);

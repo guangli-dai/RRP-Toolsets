@@ -1,5 +1,5 @@
-﻿#ifndef PCG_H
-#define PCG_H
+﻿#ifndef RSG_H
+#define RSG_H
 
 #include <QDialog>
 #include <task.h>
@@ -11,16 +11,16 @@
 #include <QtMath>
 
 namespace Ui {
-class PCG;
+class RSG;
 }
 
-class PCG : public QDialog
+class RSG : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PCG(QWidget *parent = nullptr);
-    ~PCG();
+    explicit RSG(QWidget *parent = nullptr);
+    ~RSG();
 
 public slots:
     void on_taskEnterButton_clicked();
@@ -40,7 +40,7 @@ private slots:
     //reduce a_deno/a_no
     void reduce(long& a_deno, long& a_no);
 private:
-    Ui::PCG *ui;
+    Ui::RSG *ui;
 
     void saveFile();
     void loadFile();
@@ -62,4 +62,4 @@ private:
     int id = 1;
 };
 
-#endif // PCG_H
+#endif // RSG_H

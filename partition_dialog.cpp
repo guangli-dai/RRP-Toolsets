@@ -15,6 +15,7 @@ Partition_Dialog::~Partition_Dialog()
 
 void Partition_Dialog::on_buttonBox_accepted()
 {
+    //TODO: do a parameter check here
     accept();
 }
 

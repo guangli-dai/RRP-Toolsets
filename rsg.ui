@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PCG</class>
- <widget class="QDialog" name="PCG">
+ <class>RSG</class>
+ <widget class="QDialog" name="RSG">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
+    <width>950</width>
     <height>530</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>780</width>
+    <width>950</width>
     <height>530</height>
    </size>
   </property>
@@ -32,6 +32,13 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -62,7 +69,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Regular Specification's Availability Factor:</string>
+          <string>Result: Regular Specification's Availability Factor=</string>
          </property>
         </widget>
        </item>
@@ -85,6 +92,9 @@
          </property>
          <property name="mouseTracking">
           <bool>false</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -114,6 +124,9 @@
            <width>40</width>
            <height>25</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>

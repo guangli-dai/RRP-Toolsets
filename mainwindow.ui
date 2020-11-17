@@ -53,7 +53,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pcgButton">
+       <widget class="QPushButton" name="rsgButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -224,21 +224,21 @@
     <property name="title">
      <string>About</string>
     </property>
-    <addaction name="actionPCG"/>
+    <addaction name="actionRSG"/>
     <addaction name="actionASG"/>
     <addaction name="actionST"/>
     <addaction name="actionRRP_model"/>
    </widget>
    <addaction name="menuAbout"/>
   </widget>
-  <action name="actionPCG">
+  <action name="actionRSG">
    <property name="text">
-    <string>Partition Configuration Generator</string>
+    <string>Resource Specification Generator</string>
    </property>
   </action>
   <action name="actionASG">
    <property name="text">
-    <string>Automated Schedule Generator</string>
+    <string>Cyclic Schedule Generator</string>
    </property>
   </action>
   <action name="actionST">
