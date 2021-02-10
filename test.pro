@@ -25,7 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        asc.cpp \
+        added.cpp \
+        csg.cpp \
         main.cpp \
         mainwindow.cpp \
         partition.cpp \
@@ -37,7 +38,8 @@ SOURCES += \
         task_dialog.cpp
 
 HEADERS += \
-        asc.h \
+        added.h \
+        csg.h \
         mainwindow.h \
         partition.h \
         partition_dialog.h \
@@ -48,7 +50,8 @@ HEADERS += \
         task_dialog.h
 
 FORMS += \
-        asc.ui \
+        added.ui \
+        csg.ui \
         mainwindow.ui \
         partition_dialog.ui \
         rsg.ui \
