@@ -1,8 +1,9 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "asc.h"
+#include "csg.h"
 #include "st.h"
 #include "rsg.h"
+#include "added.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QVariant>
@@ -19,6 +20,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*
 // open
 void MainWindow::on_actionOpen_triggered()
 {
@@ -58,7 +60,7 @@ void MainWindow::on_actionSave_as_triggered()
     file.flush();
     file.close();
 }
-
+*/
 
 void MainWindow::on_ascButton_clicked()
 {
@@ -116,4 +118,11 @@ void MainWindow::on_rsgButton_clicked()
     RSG rsg;
     rsg.setModal(true);
     rsg.exec();
+}
+
+void MainWindow::on_AddedBuuton_clicked()
+{
+    added add;
+    add.setModal(true);
+    add.exec();
 }
