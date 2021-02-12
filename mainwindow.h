@@ -40,7 +40,7 @@ private slots:
 
     void on_rsgButton_clicked();
 
-    void on_AddedBuuton_clicked();
+    void on_reconfButton_clicked();
 
 private:
     Ui::MainWindow *ui;

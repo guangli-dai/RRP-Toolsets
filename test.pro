@@ -25,12 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        added.cpp \
         csg.cpp \
         main.cpp \
         mainwindow.cpp \
         partition.cpp \
         partition_dialog.cpp \
+        reconf_scheduler.cpp \
         rsg.cpp \
         scheduleoutput_dialog.cpp \
         st.cpp \
@@ -38,11 +38,11 @@ SOURCES += \
         task_dialog.cpp
 
 HEADERS += \
-        added.h \
         csg.h \
         mainwindow.h \
         partition.h \
         partition_dialog.h \
+        reconf_scheduler.h \
         rsg.h \
         scheduleoutput_dialog.h \
         st.h \
@@ -50,10 +50,10 @@ HEADERS += \
         task_dialog.h
 
 FORMS += \
-        added.ui \
         csg.ui \
         mainwindow.ui \
         partition_dialog.ui \
+        reconf_scheduler.ui \
         rsg.ui \
         scheduleoutput_dialog.ui \
         st.ui \

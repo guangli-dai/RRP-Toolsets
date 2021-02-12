@@ -237,9 +237,10 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="AddedBuuton">
+       <widget class="QPushButton" name="reconfButton">
         <property name="text">
-         <string>Added</string>
+         <string>Reconfiguration
+Scheduler (ReC-S)</string>
         </property>
        </widget>
       </item>

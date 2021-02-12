@@ -1,29 +1,29 @@
-﻿#ifndef ADDED_H
-#define ADDED_H
+﻿#ifndef RECONF_SCHEDULER_H
+#define RECONF_SCHEDULER_H
 
 #include <QDialog>
 
 namespace Ui {
-class added;
+class reconf_scheduler;
 }
 
-class added : public QDialog
+class reconf_scheduler : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit added(QWidget *parent = nullptr);
-    ~added();
+    explicit reconf_scheduler(QWidget *parent = nullptr);
+    ~reconf_scheduler();
 
 private slots:
-    void on_AddedButton_clicked();
+    void on_reconf_schedulerButton_clicked();
 
     void on_ScheduleButton_clicked();
 
     void on_saveButton_clicked();
 
 private:
-    Ui::added *ui;
+    Ui::reconf_scheduler *ui;
 
     void saveFile();
     void loadFile();
@@ -46,4 +46,4 @@ private:
     int id = 1;
 };
 
-#endif // ADDED_H
+#endif // RECONF_SCHEDULER_H

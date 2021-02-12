@@ -1,5 +1,5 @@
-﻿#include "added.h"
-#include "ui_added.h"
+﻿#include "reconf_scheduler.h"
+#include "ui_reconf_scheduler.h"
 #include "QFile"
 #include "QFileDialog"
 #include "QJsonObject"
@@ -9,9 +9,9 @@
 #include "QMessageBox"
 #include "QDebug"
 
-added::added(QWidget *parent) :
+reconf_scheduler::reconf_scheduler(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::added)
+    ui(new Ui::reconf_scheduler)
 {
 
     ui->setupUi(this);
@@ -21,12 +21,12 @@ added::added(QWidget *parent) :
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
-added::~added()
+reconf_scheduler::~reconf_scheduler()
 {
     delete ui;
 }
 
-void added::on_AddedButton_clicked()
+void reconf_scheduler::on_reconf_schedulerButton_clicked()
 {
     ui->tableWidget->insertRow(ui->tableWidget->rowCount());
     int temp = ui->tableWidget->rowCount() - 1;
@@ -37,7 +37,7 @@ void added::on_AddedButton_clicked()
     ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem());
 }
 
-void added::on_ScheduleButton_clicked()
+void reconf_scheduler::on_ScheduleButton_clicked()
 {
     QString filename1 = QFileDialog::getOpenFileName(
                 this,
@@ -55,7 +55,7 @@ void added::on_ScheduleButton_clicked()
     }
 }
 
-void added::loadFile()
+void reconf_scheduler::loadFile()
 {
     QFile file(curOpenFile);
     if(!file.open(QIODevice::ReadOnly))
@@ -107,7 +107,7 @@ void added::loadFile()
     }
 }
 
-void added::on_saveButton_clicked()
+void reconf_scheduler::on_saveButton_clicked()
 {
     QString filename1 = QFileDialog::getSaveFileName(
                 this,
@@ -125,7 +125,7 @@ void added::on_saveButton_clicked()
     }
 }
 
-void added::saveFile()
+void reconf_scheduler::saveFile()
 {
     //get number of rows in the table
     item_counter = ui->tableWidget->rowCount();

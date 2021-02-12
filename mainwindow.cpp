@@ -3,7 +3,7 @@
 #include "csg.h"
 #include "st.h"
 #include "rsg.h"
-#include "added.h"
+#include "reconf_scheduler.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QVariant>
@@ -120,9 +120,9 @@ void MainWindow::on_rsgButton_clicked()
     rsg.exec();
 }
 
-void MainWindow::on_AddedBuuton_clicked()
+void MainWindow::on_reconfButton_clicked()
 {
-    added add;
-    add.setModal(true);
-    add.exec();
+    reconf_scheduler r;
+    r.setModal(true);
+    r.exec();
 }
