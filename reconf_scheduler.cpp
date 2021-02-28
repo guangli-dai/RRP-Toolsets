@@ -17,7 +17,7 @@ reconf_scheduler::reconf_scheduler(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(5);
-    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Deadline()" << "Availablity Factor";
+    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Deadline(ms)" << "Availablity Factor";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
