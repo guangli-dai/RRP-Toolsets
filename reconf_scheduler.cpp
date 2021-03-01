@@ -8,6 +8,7 @@
 #include "QJsonParseError"
 #include "QMessageBox"
 #include "QDebug"
+#include "partition_dialog.h"
 
 reconf_scheduler::reconf_scheduler(QWidget *parent) :
     QDialog(parent),
@@ -16,8 +17,8 @@ reconf_scheduler::reconf_scheduler(QWidget *parent) :
 
     ui->setupUi(this);
     QStringList title_col;
-    ui->tableWidget->setColumnCount(5);
-    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Deadline(ms)" << "Availablity Factor";
+    ui->tableWidget->setColumnCount(4);
+    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Availablity Factor";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
 }
 
@@ -33,11 +34,31 @@ void reconf_scheduler::on_reconf_schedulerButton_clicked()
     ui->tableWidget->setItem(temp, Name, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, Period, new QTableWidgetItem());
-    ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem());
+    //ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem());
 }
 
 void reconf_scheduler::on_ScheduleButton_clicked()
+{
+    QString filename1 = QFileDialog::getOpenFileName(
+                this,
+                "TextEditor - Open",
+                "",
+                "Json File (*.json);;All Files (*.*)");
+    curOpenFile = filename1;
+    if(!filename1.isEmpty())
+    {
+        //read xml file here
+        //loadFile();
+    }
+    else
+    {
+        return;
+    }
+    ui->scheduleNameLabel->setText(curOpenFile);
+}
+
+void reconf_scheduler::on_loadButton_clicked()
 {
     QString filename1 = QFileDialog::getOpenFileName(
                 this,
@@ -77,9 +98,16 @@ void reconf_scheduler::loadFile()
     }
 
     int item_size = 0;
+    QString item_name;
 
     QJsonObject rootObj = jsonDoc.object();
     //getting item size
+    if(rootObj.contains("Schedule File"))
+    {
+        item_name = rootObj.value("Schedule File").toObject()["Schedule name"].toString();
+        ui->scheduleNameLabel->setText(item_name);
+    }
+
     if(rootObj.contains("number"))
     {
         item_size = rootObj.value("number").toObject()["item_counter"].toInt();
@@ -92,7 +120,6 @@ void reconf_scheduler::loadFile()
         name = rootObj.value(QString::number(i + 1)).toObject()["RSID"].toString();
         wcet = rootObj.value(QString::number(i + 1)).toObject()["WCET"].toString();
         period = rootObj.value(QString::number(i + 1)).toObject()["Period"].toString();
-        deadline = rootObj.value(QString::number(i + 1)).toObject()["Deadline"].toString();
 
         //adding to the tablewidge
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
@@ -102,7 +129,7 @@ void reconf_scheduler::loadFile()
         ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
         ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
         ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
-        ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
+        //ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
         ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
     }
 }
@@ -151,7 +178,7 @@ void reconf_scheduler::saveFile()
         jsonObject.insert("RSID",ui->tableWidget->item(i,Name)->text());
         jsonObject.insert("WCET",ui->tableWidget->item(i,WCET)->text());
         jsonObject.insert("Period",ui->tableWidget->item(i,Period)->text());
-        jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
+        //jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
 
         mainObj.insert(QString::number(i + 1),jsonObject);
     }
@@ -160,9 +187,40 @@ void reconf_scheduler::saveFile()
     jsonObject.insert("item_counter", item_counter);
     mainObj.insert("number",jsonObject);
 
+    QJsonObject specification;
+    specification.insert("Schedule name", ui->scheduleNameLabel->text());
+    mainObj.insert("Schedule File", specification);
+
     QJsonDocument jsonDoc;
     jsonDoc.setObject(mainObj);
 
     file.write(jsonDoc.toJson());
     file.close();
+}
+
+void reconf_scheduler::on_AddedButton_clicked()
+{
+    int res;
+    Partition_Dialog pd;
+    res = pd.exec();
+    if(res == QDialog::Rejected)
+    {
+        return;
+    }
+
+    name = pd.Name();
+    wcet = pd.WCET();
+    period = pd.Period();
+
+    ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+    int temp = ui->tableWidget->rowCount() - 1;
+    ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
+    ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
+    ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
+    ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
+}
+
+void reconf_scheduler::on_removeButton_clicked()
+{
+    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
