@@ -8,7 +8,7 @@
 #include "QJsonParseError"
 #include "QMessageBox"
 #include "QDebug"
-#include "partition_dialog.h"
+#include "reconf_partition_dialog.h"
 
 reconf_scheduler::reconf_scheduler(QWidget *parent) :
     QDialog(parent),
@@ -17,9 +17,12 @@ reconf_scheduler::reconf_scheduler(QWidget *parent) :
 
     ui->setupUi(this);
     QStringList title_col;
-    ui->tableWidget->setColumnCount(4);
-    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Availablity Factor";
+    ui->tableWidget->setColumnCount(5);
+    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Scheduling Deadline(ms)" << "Availablity Factor";
+    //ui->tableWidget->setColumnCount(4);
+    //title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Availablity Factor";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
+    ui->tableWidget->setColumnWidth(3, 200);
 }
 
 reconf_scheduler::~reconf_scheduler()
@@ -34,7 +37,7 @@ void reconf_scheduler::on_reconf_schedulerButton_clicked()
     ui->tableWidget->setItem(temp, Name, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, Period, new QTableWidgetItem());
-    //ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem());
+    ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem());
     ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem());
 }
 
@@ -120,6 +123,7 @@ void reconf_scheduler::loadFile()
         name = rootObj.value(QString::number(i + 1)).toObject()["RSID"].toString();
         wcet = rootObj.value(QString::number(i + 1)).toObject()["WCET"].toString();
         period = rootObj.value(QString::number(i + 1)).toObject()["Period"].toString();
+        deadline = rootObj.value(QString::number(i + 1)).toObject()["Deadline"].toString();
 
         //adding to the tablewidge
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
@@ -129,7 +133,7 @@ void reconf_scheduler::loadFile()
         ui->tableWidget->setItem(temp, Name, new QTableWidgetItem(name));
         ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
         ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
-        //ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
+        ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
         ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
     }
 }
@@ -178,7 +182,7 @@ void reconf_scheduler::saveFile()
         jsonObject.insert("RSID",ui->tableWidget->item(i,Name)->text());
         jsonObject.insert("WCET",ui->tableWidget->item(i,WCET)->text());
         jsonObject.insert("Period",ui->tableWidget->item(i,Period)->text());
-        //jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
+        jsonObject.insert("Deadline",ui->tableWidget->item(i,Deadline)->text());
 
         mainObj.insert(QString::number(i + 1),jsonObject);
     }
@@ -201,7 +205,7 @@ void reconf_scheduler::saveFile()
 void reconf_scheduler::on_AddedButton_clicked()
 {
     int res;
-    Partition_Dialog pd;
+    Reconf_Partition_Dialog pd;
     res = pd.exec();
     if(res == QDialog::Rejected)
     {
@@ -211,6 +215,7 @@ void reconf_scheduler::on_AddedButton_clicked()
     name = pd.Name();
     wcet = pd.WCET();
     period = pd.Period();
+    deadline = pd.Deadline();
 
     ui->tableWidget->insertRow(ui->tableWidget->rowCount());
     int temp = ui->tableWidget->rowCount() - 1;
@@ -218,9 +223,17 @@ void reconf_scheduler::on_AddedButton_clicked()
     ui->tableWidget->setItem(temp, WCET, new QTableWidgetItem(wcet));
     ui->tableWidget->setItem(temp, Period, new QTableWidgetItem(period));
     ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
+    ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
 }
 
 void reconf_scheduler::on_removeButton_clicked()
 {
     ui->tableWidget->removeRow(ui->tableWidget->currentRow());
+}
+
+void reconf_scheduler::on_generateButton_clicked()
+{
+    // TODO:
+    //  1. Collect the data inputs
+    //  2. Implement the OHR-OPT algorithm
 }

@@ -28,6 +28,8 @@ private slots:
 
     void on_loadButton_clicked();
 
+    void on_generateButton_clicked();
+
 private:
     Ui::reconf_scheduler *ui;
 
@@ -44,7 +46,7 @@ private:
 
     enum Column
     {
-        Name, WCET, Period, Availability_Factor
+        Name, WCET, Period, Deadline, Availability_Factor
     };
 
     int item_counter = 0;

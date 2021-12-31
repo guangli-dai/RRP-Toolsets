@@ -1,5 +1,5 @@
 ﻿#include "csg.h"
-#include "ui_asc.h"
+#include "ui_csg.h"
 #include "partition_dialog.h"
 #include "QFile"
 #include "QDebug"
@@ -613,7 +613,6 @@ QString ASC::getXMLFormat(QVector<QVector<QString> > schedules, int time_slice_s
         }
         QDomElement plan = doc.createElement("Plan");
         plan.setAttribute("id", "0");
-        plan.setAttribute("majorFrame", QString::number(schedules[i].size()));
         cpu_now.appendChild(plan);
         int time_now = 0, counter = 0, duration = 0;
         QString last_id = schedules[i][0];
@@ -645,9 +644,11 @@ QString ASC::getXMLFormat(QVector<QVector<QString> > schedules, int time_slice_s
             slot.setAttribute("start", QString::number(time_now)+"ms");
             slot.setAttribute("duration", QString::number(duration)+"ms");
             slot.setAttribute("partitionId", last_id);
+            time_now += duration;
             counter ++;
             plan.appendChild(slot);
         }
+        plan.setAttribute("majorFrame", QString::number(time_now)+"ms");
         root.appendChild(cpu_now);
     }
     return doc.toString();

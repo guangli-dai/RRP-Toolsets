@@ -35,7 +35,8 @@ SOURCES += \
         scheduleoutput_dialog.cpp \
         st.cpp \
         st_dialog.cpp \
-        task_dialog.cpp
+        task_dialog.cpp \
+    reconf_partition_dialog.cpp
 
 HEADERS += \
         csg.h \
@@ -47,7 +48,8 @@ HEADERS += \
         scheduleoutput_dialog.h \
         st.h \
         st_dialog.h \
-        task_dialog.h
+        task_dialog.h \
+    reconf_partition_dialog.h
 
 FORMS += \
         csg.ui \
@@ -58,7 +60,8 @@ FORMS += \
         scheduleoutput_dialog.ui \
         st.ui \
         st_dialog.ui \
-        task_dialog.ui
+        task_dialog.ui \
+    reconf_partition_dialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
