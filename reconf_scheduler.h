@@ -35,7 +35,7 @@ private:
     void saveFile();
     void loadFile();
     QString getXMLFormat(QVector<QVector<QString> > schedules, int time_slice_size);
-    QVector<QString> OHR_OPT(QVector<Reconf_Partition>& partitions);
+    QVector<QString> OHR_OPT(QVector<Reconf_Partition>& partitions, int time_slice_size);
     approximates z_approx(double af, int factor);
     double approximate_value(double value);
     bool test_approx(QVector<Reconf_Partition>& partitions, int factor);

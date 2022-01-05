@@ -21,7 +21,7 @@ reconf_scheduler::reconf_scheduler(QWidget *parent) :
     ui->setupUi(this);
     QStringList title_col;
     ui->tableWidget->setColumnCount(5);
-    title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Scheduling Deadline(ms)" << "Availablity Factor";
+    title_col << "Partition ID" << "WCET(ms)" << "Period(ms)" << "Scheduling Deadline(ms)" << "Availablity Factor";
     //ui->tableWidget->setColumnCount(4);
     //title_col << "Task ID" << "WCET(ms)" << "Period(ms)" << "Availablity Factor";
     ui->tableWidget->setHorizontalHeaderLabels(title_col);
@@ -114,6 +114,7 @@ void reconf_scheduler::loadFile()
         ui->tableWidget->setItem(temp, Deadline, new QTableWidgetItem(deadline));
         ui->tableWidget->setItem(temp, Availability_Factor, new QTableWidgetItem(QString::number(wcet.toDouble()/period.toDouble())));
     }
+    ui->timeSliceLengthEdit->setPlainText(rootObj.value("timeSliceLength").toString());
 }
 
 void reconf_scheduler::on_saveButton_clicked()
@@ -148,7 +149,6 @@ void reconf_scheduler::saveFile()
                     tr("Cannot write file %1.\nError: %2")
                     .arg(curSaveFile)
                     .arg(file.errorString()));
-
     }
 
     QJsonObject mainObj;
@@ -163,6 +163,8 @@ void reconf_scheduler::saveFile()
 
         mainObj.insert(QString::number(i + 1),jsonObject);
     }
+
+    mainObj.insert("timeSliceLength", ui->timeSliceLengthEdit->toPlainText());
 
     QJsonObject jsonObject;
     jsonObject.insert("item_counter", item_counter);
@@ -207,7 +209,6 @@ void reconf_scheduler::on_removeButton_clicked()
 
 void reconf_scheduler::on_generateButton_clicked()
 {
-    // TODO:
     //  1. Collect the data inputs
     //  2. Collect the old schedule (convert from XML back to QVector<QString> schedules)
     //  3. Implement the OHR-OPT algorithm
@@ -223,18 +224,18 @@ void reconf_scheduler::on_generateButton_clicked()
         Reconf_Partition temp_par(id, wcet, period, deadline);
         partitions.push_back(temp_par);
     }
-    int time_slice_length = 10; // add time_slice length to the UI
-    QVector<QString> schedule = OHR_OPT(partitions);
+    int time_slice_size = ui->timeSliceLengthEdit->toPlainText().toInt();
+    QVector<QString> schedule = OHR_OPT(partitions, time_slice_size);
     QVector<QVector<QString>> schedules;
     schedules.push_back(schedule);
-    QString xml_outputs = getXMLFormat(schedules, time_slice_length);
+    QString xml_outputs = getXMLFormat(schedules, time_slice_size);
     ScheduleOutput_Dialog s;
     s.setXML(xml_outputs);
     s.exec();
 
 }
 
-QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions)
+QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions, int time_slice_size)
 {
     // approximate each partition using MulZ, update the partitions accordingly
     int factors[4] = {3,4,5,7};
@@ -264,18 +265,22 @@ QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions
     int hyper_period = 0;
     for(int i=0; i<partitions.size(); i++)
     {
-        qDebug()<<i<<":" << partitions[i].getWCET() << "/" << partitions[i].getPeriod()<<endl;
-        if(partitions[i].getWCET()==1) {
+        //qDebug()<<i<<"(" << partitions[i].getId() << ")" <<":" << partitions[i].getWCET() << "/" << partitions[i].getPeriod()<<endl;
+        if(partitions[i].getWCET()==1)
+        {
             V.insert(i);
         }
-        else {
+        else
+        {
             U.push_back(i);
         }
 
-        if(hyper_period == 0) {
+        if(hyper_period == 0)
+        {
             hyper_period = partitions[i].getPeriod();
         }
-        else {
+        else
+        {
             hyper_period = lcm(hyper_period, partitions[i].getPeriod());
         }
 
@@ -283,7 +288,7 @@ QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions
 
     QVector<QString> schedule(hyper_period, "-1");
     // schedule U, needs to enumerate all partitions in
-    // pregenerate all schedules for different delta for all partitions, then use dfs to do the search? bfs may be better?
+    // pregenerate all schedules for different delta for all partitions, then use dfs to do the search
     QVector<QVector<QSet<int>>> taus; // tau[i][j] represents the set of time slices beloning to partitions[i] with delta = j
     for(int i=0; i<U.size(); i++)
     {
@@ -297,8 +302,9 @@ QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions
             bool fits = false;
             for(int s:t)
             {
-                if(s <= partitions[index].getDeadline())
+                if(s * time_slice_size <= partitions[index].getDeadline())
                 {
+                    //qDebug() << partitions[index].getId() << ": " << s*time_slice_size << "," << partitions[index].getDeadline();
                     fits = true;
                     break;
                 }
@@ -323,20 +329,29 @@ QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions
         return schedule;
     }
 
-
     // collect the result by updating schedule
     for(int i=0; i<result.size(); i++)
     {
         int j = result[i];
-        for(int k=0; k<hyper_period / partitions[i].getPeriod(); k++)
+        int index = U[i];
+        //qDebug() << i << " --> " << U[i];
+        for(int k=0; k<hyper_period / partitions[index].getPeriod(); k++)
         {
 
             for(auto t:taus[i][j])
             {
-                schedule[t + k * partitions[i].getPeriod()] = partitions[i].getId();
+                schedule[t + k * partitions[index].getPeriod()] = partitions[index].getId();
             }
         }
     }
+
+    /*
+    // for debugging purposes
+    for(int i=0; i<schedule.size(); i++)
+    {
+        qDebug() << i << ":" << schedule[i];
+    }
+    */
 
     QMap<int, int> avails;
     for(int i=0; i<schedule.size(); i++)
@@ -362,10 +377,8 @@ QVector<QString> reconf_scheduler::OHR_OPT(QVector<Reconf_Partition>& partitions
         }
         // schedule next partition
         int timeNow = avails.lowerBound(0).key(); // timeNow in the unit of time slice
-        //qDebug() << timeNow;
-        if(timeNow > smallestDDL)
+        if(timeNow * time_slice_size > smallestDDL)
         {
-            //qDebug() << timeNow <<" misses the deadline!";
             QMessageBox::warning(
                         this,
                         "TextEditor",
