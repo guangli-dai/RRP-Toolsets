@@ -1,6 +1,7 @@
 ﻿#ifndef RECONF_SCHEDULER_H
 #define RECONF_SCHEDULER_H
 
+#include "partition.h"
 #include <QDialog>
 
 namespace Ui {
@@ -18,8 +19,6 @@ public:
 private slots:
     void on_reconf_schedulerButton_clicked();
 
-    void on_ScheduleButton_clicked();
-
     void on_saveButton_clicked();
 
     void on_AddedButton_clicked();
@@ -35,6 +34,14 @@ private:
 
     void saveFile();
     void loadFile();
+    QString getXMLFormat(QVector<QVector<QString> > schedules, int time_slice_size);
+    QVector<QString> OHR_OPT(QVector<Reconf_Partition>& partitions);
+    approximates z_approx(double af, int factor);
+    double approximate_value(double value);
+    bool test_approx(QVector<Reconf_Partition>& partitions, int factor);
+    int lcm(int a, int b);
+    QSet<int> tau(int p, int q, int delta);
+    bool search(QVector<QVector<QSet<int>>> &taus, QVector<int> &result, QSet<int> &now);
 
     QString curSaveFile;
     QString curOpenFile;

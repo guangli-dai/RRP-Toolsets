@@ -648,7 +648,8 @@ QString ASC::getXMLFormat(QVector<QVector<QString> > schedules, int time_slice_s
             counter ++;
             plan.appendChild(slot);
         }
-        plan.setAttribute("majorFrame", QString::number(time_now)+"ms");
+
+        plan.setAttribute("majorFrame", QString::number(schedules[i].size() * time_slice_size)+"ms");
         root.appendChild(cpu_now);
     }
     return doc.toString();

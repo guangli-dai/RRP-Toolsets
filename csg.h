@@ -8,12 +8,6 @@
 namespace Ui {
 class ASC;
 }
-struct approximates
-{
-    double aaf;
-    int WCET;
-    int period;
-};
 
 struct dp_return
 {
